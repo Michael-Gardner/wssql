@@ -27,28 +27,21 @@ FIND_PACKAGE(Java REQUIRED)
 FIND_PACKAGE(ANTLR REQUIRED)
 
 #antlr3c must be built in order to build with the generated lexer.c and parser.c
-INCLUDE (${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/buildANTLR3c.cmake)
-#INCLUDE (${CMAKE_MODULE_PATH}FindANTLR3c.cmake)
 INCLUDE(${HPCC_WSSQL_SOURCE_DIR}/esp/scm/additional.cmake)
 
 SET (HPCC_SQL_PARSER_LOCATION ${HPCC_WSSQL_SOURCE_DIR}/esp/services/ws_sql/SQL2ECL)
-SET (HPCC_SQL_PARSER_GRAMMAR_PATH ${HPCC_SQL_PARSER_LOCATION}/ANTLR3c)
-SET (HPCC_SQL_PARSER_GRAMMAR_NAME HPCCSQL.g)
+SET (HPCC_SQL_PARSER_GRAMMAR_PATH ${HPCC_SQL_PARSER_LOCATION}/grammars)
+SET (HPCC_SQL_PARSER_GRAMMAR_NAME HPCCSQL.g4)
 
-#sample command
-#java -jar antlr-3.4-complete.jar -o /home/hpccuser/GIT/HPCC-Platform/esp/services/ws_sql/SQL2ECL/ -report -traceTreeParser /usr/local/eclipse/workspaces/antlr/mysql/HPCCSQL.g
-
-#The actual java command to generate lexer and parser
-SET (ANTLR3c_COMMAND ${Java_JAVA_EXECUTABLE} "-jar" ${ANTLR_BUILDTIME_JAR} ${HPCC_SQL_PARSER_GRAMMAR_PATH}/${HPCC_SQL_PARSER_GRAMMAR_NAME} "-o" ${HPCC_SQL_PARSER_LOCATION})
-
+SET (ANTLR4_COMMAND ${Java_JAVA_EXECUTABLE} "-jar" ${ANTLR_BUILDTIME_JAR} ${HPCC_SQL_PARSER_GRAMMAR_PATH}/${HPCC_SQL_PARSER_GRAMMAR_NAME} "-o" ${HPCC_SQL_PARSER_LOCATION})
 #The lexer and parser targets
-SET (ANTLR_GENERATED_LEXER  ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLLexer.c)
-SET (ANTLR_GENERATED_PARSER ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLParser.c)
+SET (ANTLR_GENERATED_LEXER  ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLLexer.cpp)
+SET (ANTLR_GENERATED_PARSER ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLParser.cpp)
 
 #Create the ANTLR generated c targeted lexer and parser
 ADD_CUSTOM_COMMAND(
         OUTPUT ${ANTLR_GENERATED_LEXER} ${ANTLR_GENERATED_PARSER}
-        COMMAND ${ANTLR3c_COMMAND}
+        COMMAND ${ANTLR4_COMMAND}
 )
 
 SET(    SRCS
@@ -119,5 +112,5 @@ TARGET_LINK_LIBRARIES (
         esphttp
         securesocket
         dalibase
-        libantlr3c
+        antlr4_shared
     )

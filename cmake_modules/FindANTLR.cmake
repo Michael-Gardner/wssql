@@ -23,16 +23,14 @@ INCLUDE(UseJava)
 # ANTLR_FOUND - ANTLR found in local system
 # ANTLR_BUILDTIME_JAR - The jar needed to build/generate ANTLR Lexers and Parsers
 # ANTLR_RUNTIME_JAR - The jar needed to build/generate ANTLR Lexers and Parsers
-# ANTLR_LICENSE_FILE - The appropriate ANTLR license needs to be included with runtime binaries
 
-SET (ANTLR_LICENSE_FILE_NAME "ANTLR-LICENSE.txt")
 SET (ANTLR_PACKAGE_PATH "org/antlr/runtime")
 
 if (NOT ANTLR_FOUND)
 
     OPTION(ANTLR_VER "ANTLR runtime and buildtime version.")
     IF (NOT ANTLR_VER )
-        SET ( ANTLR_VER 3.4)
+        SET ( ANTLR_VER 4.6)
     ENDIF()
 
     OPTION(ANTLR_BUILDTIME_DEP "ANTLR buildtime jar file name.")
@@ -53,19 +51,15 @@ if (NOT ANTLR_FOUND)
         MESSAGE("-- Option ANTLR_PATH not set, setting to: ${ANTLR_PATH}")
     ENDIF ()
 
+	SET(ANTLR_STANDARD_PATH "/usr/local/lib")
+
     MESSAGE("-- Searching for ANTLR jar files: ${ANTLR_RUNTIME_DEP} and ${ANTLR_BUILDTIME_DEP}")
 
-    find_jar(ANTLR_RUNTIME_JAR ${ANTLR_RUNTIME_DEP} PATHS ${ANTLR_PATH} )
+    find_jar(ANTLR_RUNTIME_JAR ${ANTLR_RUNTIME_DEP} PATHS ${ANTLR_PATH} ${ANTLR_STANDARD_PATH} )
     MESSAGE("--- ANTLR_RUNTIME_JAR: ${ANTLR_RUNTIME_JAR}")
 
-    find_jar(ANTLR_BUILDTIME_JAR ${ANTLR_BUILDTIME_DEP} PATHS ${ANTLR_PATH} )
+    find_jar(ANTLR_BUILDTIME_JAR ${ANTLR_BUILDTIME_DEP} PATHS ${ANTLR_PATH} ${ANTLR_STANDARD_PATH} )
     MESSAGE("--- ANTLR_BUILDTIME_JAR: ${ANTLR_BUILDTIME_JAR}")
-
-    FIND_FILE(ANTLR_LICENSE_FILE ${ANTLR_LICENSE_FILE_NAME} PATHS ${ANTLR_PATH})
-    MESSAGE("-- Searching for ANTLR license file:")
-    MESSAGE("--- ${ANTLR_LICENSE_FILE}")
-
-    FILE(GLOB ANTLRRUNTIMECLASSES "${ANTLR_PATH}/ANTLR_PACKAGE_PATH/*.class")
 
     MARK_AS_ADVANCED(ANTLR_BUILDTIME_JAR ANTLR_RUNTIME_JAR )
 

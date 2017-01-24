@@ -1,0 +1,4 @@
+grammar HPCCSQL;
+
+statement:
+    command
