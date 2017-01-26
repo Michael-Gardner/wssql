@@ -31,9 +31,9 @@ limitations under the License.
 #endif
 /* undef SOCKET definitions to avoid collision in Antlrdefs.h*/
 
-#include "HPCCSQLLexer.h"
-#include "HPCCSQLParser.h"
-
+#include "WSSQLLexer.h"
+#include "WSSQLParser.h"
+#include "WSSQLParserBaseListener.h"
 
 #include "SQLColumn.hpp"
 #include "SQLTable.hpp"

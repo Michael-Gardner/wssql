@@ -35,8 +35,8 @@ limitations under the License.
     #undef SOCKET
 #endif
 
-#include "HPCCSQLLexer.h"
-#include "HPCCSQLParser.h"
+//#include "WSSQLLexer.h"
+//#include "WSSQLParser.h"
 
 typedef enum _HPCCFileFormat
 {

@@ -30,7 +30,7 @@ limitations under the License.
     //#pragma message( "UNDEFINING SOCKET - Will be redefined by ANTLRDEFS.h" )
     #undef SOCKET
 #endif
-#include "HPCCSQLLexer.h"
+//#include "WSSQLLexer.h"
 /* undef SOCKET definitions to avoid collision in Antlrdefs.h*/
 
 typedef enum _SQLExpressionType

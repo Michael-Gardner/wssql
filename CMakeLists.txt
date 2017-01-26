@@ -67,7 +67,6 @@ INCLUDE(${HPCC_SOURCE_DIR}/version.cmake)
 INCLUDE(${CMAKE_MODULE_PATH}/optionDefaults.cmake)
 INCLUDE(${CMAKE_MODULE_PATH}/commonSetup.cmake)
 
-
 IF ( NOT MAKE_DOCS_ONLY )
     IF ( "${HPCC_MATURITY}" STREQUAL "release" )
         set(hpccstagever "${HPCC_SEQUENCE}")
@@ -99,7 +98,6 @@ IF ( NOT MAKE_DOCS_ONLY )
 
     MESSAGE("*** END SETTING UP HPCC PLATFORM ***")
 
-	HPCC_ADD_SUBDIRECTORY (antlr4/runtime/Cpp)
     HPCC_ADD_SUBDIRECTORY (esp)
     HPCC_ADD_SUBDIRECTORY (initfiles)
 
