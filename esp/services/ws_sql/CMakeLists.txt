@@ -20,34 +20,30 @@
 #    Cmake Input File for ws_sql
 #####################################################
 
-PROJECT( ws_sql )
+project(ws_sql)
 
 # Java and ANTLR needed for generating lexer and parser
-FIND_PACKAGE(Java REQUIRED)
+find_package(Java REQUIRED)
 find_package(ANTLR4CPP REQUIRED)
-FIND_PACKAGE(ANTLR REQUIRED)
+find_package(ANTLR REQUIRED)
 
-#antlr3c must be built in order to build with the generated lexer.c and parser.c
-include(${HPCC_WSSQL_SOURCE_DIR}/esp/scm/additional.cmake)
+#include(${HPCC_WSSQL_SOURCE_DIR}/esp/scm/additional.cmake)
 
 include(${CMAKE_MODULE_PATH}/generateLexerAndParser.cmake)
-set(SQL2ECL "${CMAKE_CURRENT_SOURCE_DIR}/SQL2ECL")
+set(SQL2ECL "${CMAKE_CURRENT_SOURCE_DIR}/sql2ecl")
+
+message(STATUS "ANTLR4_GENERATED_SOURCE = ${ANTLR4_GENERATED_SOURCE}")
+message(STATUS "ANTLR4_GENERATED_HEADER = ${ANTLR4_GENERATED_HEADER}")
+message(STATUS "ANTLR4CPP_INCLUDE_DIRS  = ${ANTLR4CPP_INCLUDE_DIRS}")
+message(STATUS "ANTLR4CPP_LIBRARIES     = ${ANTLR4CPP_LIBRARIES}")
 
 set(SRCS
-    ${ESPSCM_GENERATED_DIR}/ws_sql_esp.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ws_sqlPlugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ws_sqlService.cpp
-    ${SQL2ECL}/HPCCFileCache.cpp
-    ${SQL2ECL}/HPCCFile.cpp
-    ${SQL2ECL}/ECLFunction.cpp
-    ${SQL2ECL}/ECLEngine.cpp
-    ${SQL2ECL}/SQLColumn.cpp
-    ${SQL2ECL}/SQLTable.hpp
-    ${SQL2ECL}/SQLExpression.cpp
-    ${SQL2ECL}/SQLJoin.cpp
-    ${SQL2ECL}/HPCCSQLTreeWalker.cpp
-    ${ANTLR_GENERATED_SOURCE}
+    ${SQL2ECL}/ws_sql.cpp
+	${SQL2ECL}/HPCCSQLListener.cpp
+    ${ANTLR4_GENERATED_SOURCE}
     )
+
+message(STATUS "SOURCES                 = ${SRCS}")
 
 set(INCLUDES
     ${ANTLR4_GENRATED_HEADER}
@@ -58,8 +54,6 @@ include_directories(
     ${CMAKE_BINARY_DIR}
     #added for build-config.h
     ${CMAKE_BINARY_DIR}/oss
-	${SQL2ECL}
-    ${HPCC_WSSQL_SOURCE_DIR}/esp/services/ws_sql/SQL2ECL-antlr4
     ${HPCC_SOURCE_DIR}/esp/bindings
     ${HPCC_SOURCE_DIR}/esp/bindings/SOAP/xpp
     ${HPCC_SOURCE_DIR}/esp/smc/SMCLib
@@ -85,12 +79,13 @@ include_directories(
     ${HPCC_SOURCE_DIR}/common/dllserver
     ${HPCC_SOURCE_DIR}/common/deftype
     ${HPCC_SOURCE_DIR}/ecl/hql
+	${SQL2ECL}
     ${ANTLR4CPP_INCLUDE_DIRS}
     )
 
 add_definitions(-D_USRDLL)
 
-add_library(ws_sql SHARED ${SRCS} ${INCLUDES})
+add_executable(ws_sql ${SRCS} ${INCLUDES})
 install(TARGETS ws_sql
     RUNTIME DESTINATION ${EXEC_DIR}
     LIBRARY DESTINATION ${LIB_DIR}
@@ -98,18 +93,10 @@ install(TARGETS ws_sql
     )
 
 add_dependencies(ws_sql
-    wssqlespscm
     antlr-generated-listener
     )
 
 target_link_libraries(ws_sql
-    ws_workunits
-    ws_ecl
-    ws_dfu
     jlib
-    xmllib
-    esphttp
-    securesocket
-    dalibase
-    ${ANTLR4CPP_LIBRARIES}
+	${ANTLR4CPP_LIBRARIES}
     )

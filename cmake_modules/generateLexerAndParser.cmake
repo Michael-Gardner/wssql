@@ -1,24 +1,25 @@
-set(GRAMMAR_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/SQL2ECL/grammars")
-set(OUTPUT_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/SQL2ECL")
-set(ANTLR4_GRAMMAR_LEXER "SQLLexer.g4")
-set(ANTLR4_GRAMMAR_PARSER "SQLParser.g4")
+set(GRAMMAR_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/sql2ecl/grammars")
+set(OUTPUT_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/sql2ecl")
+set(GRAMMAR_PREFIX "HPCCSQL")
+set(ANTLR4_GRAMMAR_LEXER "${GRAMMAR_PREFIX}Lexer.g4")
+set(ANTLR4_GRAMMAR_PARSER "${GRAMMAR_PREFIX}Parser.g4")
 
 set(ANTLR4_GENERATED_SOURCE
-	MySQLLexer.cpp
-	MySQLParser.cpp
-	MySQLParserBaseListener.cpp
-	MySQLParserListener.cpp
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Lexer.cpp
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Parser.cpp
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}ParserBaseListener.cpp
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}ParserListener.cpp
 )
 set(ANTLR4_GENERATED_HEADER
-	MySQLLexer.h
-	MySQLParser.h
-	MySQLParserBaseListener.h
-	MySQLParserListener.h
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Lexer.h
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Parser.h
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}ParserBaseListener.h
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}ParserListener.h
 )
 
 set(ANTLR4_GENERATED_MISC
-	MySQLParser.tokens
-	MySQLLexer.tokens
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Parser.tokens
+	${OUTPUT_DIR}/${GRAMMAR_PREFIX}Lexer.tokens
 )
 
 find_package(Java REQUIRED)
