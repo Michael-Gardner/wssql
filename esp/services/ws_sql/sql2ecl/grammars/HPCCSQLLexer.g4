@@ -28,6 +28,8 @@ TOKEN_DIVIDE: '/';
 TOKEN_NOT: N O T;
 TOKEN_IN: I N;
 
+TOKEN_SEMICOLON: ';';
+
 TOKEN_ID:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'_'|'-'|':'|'*')*;
 TOKEN_INT: ('1'..'9') ('0'..'9')*;
 

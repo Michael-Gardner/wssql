@@ -9,7 +9,7 @@ using namespace antlr4;
 
 int main(int,const char **)
 {
-	ANTLRInputStream input("select column1 from table1;");
+	ANTLRInputStream input("select col from tab;");
 	HPCCSQLLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
 	
@@ -18,9 +18,12 @@ int main(int,const char **)
 		std::cout << token->toString() << std::endl;
 
 	HPCCSQLParser parser(&tokens);
-	tree::ParseTree * tree = parser.select();
+	HPCCSQLListener * listener = new HPCCSQLListener();
+
+	tree::ParseTree * tree = parser.statement();
+	tree::ParseTreeWalker::DEFAULT.walk(listener,tree);
 	
-	std::cout << tree->toStringTree(&parser) << std::endl;
+	//std::cout << tree->toStringTree(&parser) << std::endl;
 
 	return 0;
 }

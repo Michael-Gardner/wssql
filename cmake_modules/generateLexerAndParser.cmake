@@ -1,6 +1,6 @@
 set(GRAMMAR_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/sql2ecl/grammars")
 set(OUTPUT_DIR "${CMAKE_SOURCE_DIR}/esp/services/ws_sql/sql2ecl")
-set(GRAMMAR_PREFIX "HPCCSQL")
+set(GRAMMAR_PREFIX "MySQL")
 set(ANTLR4_GRAMMAR_LEXER "${GRAMMAR_PREFIX}Lexer.g4")
 set(ANTLR4_GRAMMAR_PARSER "${GRAMMAR_PREFIX}Parser.g4")
 

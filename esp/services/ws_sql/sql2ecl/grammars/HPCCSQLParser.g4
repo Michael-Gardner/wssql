@@ -5,8 +5,8 @@ options
    { tokenVocab = HPCCSQLLexer; }
 
 statement:
-	select from (conditional)?
-	| insert into (conditional)?
+	select from (conditional)? TOKEN_SEMICOLON
+	| insert into (conditional)? TOKEN_SEMICOLON
 ;
 
 select:	TOKEN_SELECT column;
