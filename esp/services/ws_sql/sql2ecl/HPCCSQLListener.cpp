@@ -1,27 +1,22 @@
 #include "HPCCSQLListener.hpp"
 #include <iostream>
 
-void HPCCSQLListener::enterStatement(HPCCSQLParser::StatementContext * ctx)
+void HPCCSQLListener::enterSelect_statement(MySQLParser::Select_statementContext * ctx)
 {
     std::cout << "in statement :: " << ctx->getText() << std::endl;
 }
 
-void HPCCSQLListener::enterSelect(HPCCSQLParser::SelectContext * ctx)
+void HPCCSQLListener::enterSelect_expression(MySQLParser::Select_expressionContext * ctx)
 {
-    std::cout << "in select :: " << ctx->getText() << std::endl;
+    std::cout << "in select expression :: " << ctx->getText() << std::endl;
 }
 
-void HPCCSQLListener::enterColumn(HPCCSQLParser::ColumnContext * ctx)
+void HPCCSQLListener::enterSelect_list(MySQLParser::Select_listContext * ctx)
 {
-    std::cout << "in column :: " << ctx->getText() << std::endl;
+    std::cout << "in select list :: " << ctx->getText() << std::endl;
 }
 
-void HPCCSQLListener::enterFrom(HPCCSQLParser::FromContext * ctx)
+void HPCCSQLListener::enterTable_references(MySQLParser::Table_referencesContext * ctx)
 {
-    std::cout << "in from :: " << ctx->getText() << std::endl;
-}
-
-void HPCCSQLListener::enterTable(HPCCSQLParser::TableContext * ctx)
-{
-    std::cout << "in table :: " << ctx->getText() << std::endl;
+    std::cout << "in table references:: " << ctx->getText() << std::endl;
 }

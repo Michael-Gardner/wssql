@@ -817,8 +817,8 @@ fragment USER_VAR_SUBFIX2:	( '\'' (~'\'')+ '\'' ) ;
 fragment USER_VAR_SUBFIX3:	( '\"' (~'\"')+ '\"' ) ;
 fragment USER_VAR_SUBFIX4:	( 'A'..'Z' | 'a'..'z' | '_' | '$' | '0'..'9' | DOT )+ ;
 
-WHITE_SPACE	: ( ' '|'\r'|'\t'|'\n' ) {$channel=HIDDEN;} ;
+WHITE_SPACE	: ( ' '|'\r'|'\t'|'\n' ) -> skip;
 
 // http://dev.mysql.com/doc/refman/5.6/en/comments.html
-SL_COMMENT	: ( ('--'|'#') ~('\n'|'\r')* '\r'? '\n' ) {$channel=HIDDEN;} ;
-ML_COMMENT	: '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;} ;
+SL_COMMENT	: ( ('--'|'#') ~('\n'|'\r')* '\r'? '\n' ) -> skip ;
+ML_COMMENT	: '/*' .*? '*/' -> skip ;

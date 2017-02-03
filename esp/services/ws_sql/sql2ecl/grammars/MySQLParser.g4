@@ -23,8 +23,9 @@ bit_value_type:
 numeric_types:
 	integer_types | fixed_point_types | floating_point_types | bit_value_type;
 
-datetime_length:
-	LPAREN tlen=INTEGER_NUM RPAREN {atoi((char*)($tlen.text->chars)) <= 6}?  ;
+datetime_length: LPAREN timelen RPAREN;
+timelen: INTEGER_NUM;
+
 datetime_types:
 	  ( DATE_SYM )
 	| ( TIME_SYM (datetime_length)? )
@@ -33,23 +34,38 @@ datetime_types:
 
 
 char_varchar_types:
-	( CHAR      LPAREN clen=INTEGER_NUM RPAREN {atoi((char*)($clen.text->chars)) < 256}? )
-	|
-	( VARCHAR   LPAREN vlen=INTEGER_NUM RPAREN {atoi((char*)($vlen.text->chars)) < 1024}? ) ;
+	CHAR LPAREN charlen RPAREN
+	| VARCHAR LPAREN varcharlen RPAREN;
+charlen: INTEGER_NUM;
+varcharlen: INTEGER_NUM;
+
 binary_varbinary_types:
-	( BINARY    LPAREN blen=INTEGER_NUM RPAREN {atoi((char*)($blen.text->chars)) < 256}? )
+	( BINARY    LPAREN binlen RPAREN )
 	|
-	( VARBINARY LPAREN vlen=INTEGER_NUM RPAREN {atoi((char*)($vlen.text->chars)) < 1024}? ) ;
+	( VARBINARY LPAREN varbinlen RPAREN ) ;
+binlen: INTEGER_NUM;
+varbinlen: INTEGER_NUM;
+
 blob_types:
-	  ( TINYBLOB   LPAREN blen=INTEGER_NUM RPAREN {atoi((char*)($blen.text->chars)) < (1<<8)}?  ) 
-	| ( BLOB_SYM   LPAREN blen=INTEGER_NUM RPAREN {atoi((char*)($blen.text->chars)) < (1<<16)}? ) 
-	| ( MEDIUMBLOB LPAREN blen=INTEGER_NUM RPAREN {atoi((char*)($blen.text->chars)) < (1<<24)}? ) 
-	| ( LONGBLOB   LPAREN blen=INTEGER_NUM RPAREN {_atoi64((char*)($blen.text->chars)) < (1LL<<32)}? ) ;	// atoll
+	  ( TINYBLOB   LPAREN tinybloblen RPAREN ) 
+	| ( BLOB_SYM   LPAREN blobsymlen=INTEGER_NUM RPAREN ) 
+	| ( MEDIUMBLOB LPAREN mediumbloblen=INTEGER_NUM RPAREN ) 
+	| ( LONGBLOB   LPAREN longbloblen=INTEGER_NUM RPAREN );
+tinybloblen: INTEGER_NUM;
+blobsymlen: INTEGER_NUM;
+mediumblob: INTEGER_NUM;
+longblob: INTEGER_NUM;
+
 text_types:
-	  ( TINYTEXT   LPAREN tlen=INTEGER_NUM RPAREN {atoi((char*)($tlen.text->chars)) < (1<<8)}?  ) 
-	| ( TEXT_SYM   LPAREN tlen=INTEGER_NUM RPAREN {atoi((char*)($tlen.text->chars)) < (1<<16)}? ) 
-	| ( MEDIUMTEXT LPAREN tlen=INTEGER_NUM RPAREN {atoi((char*)($tlen.text->chars)) < (1<<24)}? ) 
-	| ( LONGTEXT   LPAREN tlen=INTEGER_NUM RPAREN {_atoi64((char*)($tlen.text->chars)) < (1LL<<32)}? ) ;	// atoll
+	  ( TINYTEXT   LPAREN tinytextlen RPAREN  ) 
+	| ( TEXT_SYM   LPAREN textsymlen RPAREN  ) 
+	| ( MEDIUMTEXT LPAREN mediumtextlen RPAREN  ) 
+	| ( LONGTEXT   LPAREN longtextlen RPAREN  );
+tinytextlen: INTEGER_NUM;
+textsymlen: INTEGER_NUM;
+mediumtextlen: INTEGER_NUM;
+longtextlen: INTEGER_NUM;
+	
 enum_types:
 	ENUM    LPAREN TEXT_STRING (COMMA TEXT_STRING)* RPAREN;		//0 <= count <= 65535
 set_types:
@@ -358,25 +374,25 @@ group_functions:
 
 
 // identifiers ---  http://dev.mysql.com/doc/refman/5.6/en/identifiers.html --------------
-schema_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("schema name = \%s \n",(char*)($tmpName.text->chars));};
-table_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("table name = \%s \n",(char*)($tmpName.text->chars));};
-engine_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("engine name = \%s \n",(char*)($tmpName.text->chars));};
-column_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("column name = \%s \n",(char*)($tmpName.text->chars));};
-view_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("view name = \%s \n",(char*)($tmpName.text->chars));};
-parser_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("index name = \%s \n",(char*)($tmpName.text->chars));};
-index_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("index name = \%s \n",(char*)($tmpName.text->chars));};
-partition_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("partition name = \%s \n",(char*)($tmpName.text->chars));};
-partition_logical_name		: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("partition logical name = \%s \n",(char*)($tmpName.text->chars));};
-constraint_symbol_name		: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("constraint symbol name = \%s \n",(char*)($tmpName.text->chars));};
-foreign_key_symbol_name		: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("foreign key symbol name = \%s \n",(char*)($tmpName.text->chars));};
-collation_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("collation name = \%s \n",(char*)($tmpName.text->chars));};
-event_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("event name = \%s \n",(char*)($tmpName.text->chars));};
-user_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("user name = \%s \n",(char*)($tmpName.text->chars));};
-function_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("function name = \%s \n",(char*)($tmpName.text->chars));};
-procedure_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("procedure name = \%s \n",(char*)($tmpName.text->chars));};
-server_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("server name = \%s \n",(char*)($tmpName.text->chars));};
-wrapper_name			: tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 64}? {printf("wrapper name = \%s \n",(char*)($tmpName.text->chars));};
-alias				: ( AS_SYM )? tmpName=ID {strlen((const char *)$tmpName.text->chars) <= 256}? {printf("alias = \%s \n",(char*)($tmpName.text->chars));};
+schema_name			: ID;
+table_name			: ID;
+engine_name			: ID;
+column_name			: ID;
+view_name			: ID;
+parser_name			: ID;
+index_name			: ID;
+partition_name			: ID;
+partition_logical_name		: ID;
+constraint_symbol_name		: ID;
+foreign_key_symbol_name		: ID;
+collation_name			: ID;
+event_name			: ID;
+user_name			: ID;
+function_name			: ID;
+procedure_name			: ID;
+server_name			: ID;
+wrapper_name			: ID;
+alias				: ( AS_SYM )? ID;
 
 
 

@@ -4,12 +4,13 @@
 #include "MySQLLexer.h"
 #include "MySQLParser.h"
 #include "HPCCSQLListener.hpp"
+#include "SQLObject.hpp"
 
 using namespace antlr4;
 
 int main(int,const char **)
 {
-	ANTLRInputStream input("select col from tab;");
+	ANTLRInputStream input("select ALL thor::num from tab, bob, foo;");
 	MySQLLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
 	
@@ -20,10 +21,10 @@ int main(int,const char **)
 	MySQLParser parser(&tokens);
 	HPCCSQLListener * listener = new HPCCSQLListener();
 
-	tree::ParseTree * tree = parser.statement();
+	tree::ParseTree * tree = parser.select_statement();
 	tree::ParseTreeWalker::DEFAULT.walk(listener,tree);
 	
-	//std::cout << tree->toStringTree(&parser) << std::endl;
+	std::cout << tree->toStringTree(&parser) << std::endl;
 
 	return 0;
 }
