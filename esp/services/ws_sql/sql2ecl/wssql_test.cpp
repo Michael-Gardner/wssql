@@ -10,7 +10,8 @@ using namespace antlr4;
 
 int main(int,const char **)
 {
-	ANTLRInputStream input("select ALL thor::num from tab, bob, foo;");
+	std::string query = "select ALL thor::num from tab, bob, foo;";
+	ANTLRInputStream input(query);
 	MySQLLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
 	
@@ -25,6 +26,9 @@ int main(int,const char **)
 	tree::ParseTreeWalker::DEFAULT.walk(listener,tree);
 	
 	std::cout << tree->toStringTree(&parser) << std::endl;
+
+	SQLObject sqlObject = listener->getSQL();
+	std::cout << sqlObject.toString() << std::endl;
 
 	return 0;
 }

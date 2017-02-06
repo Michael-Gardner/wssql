@@ -805,7 +805,7 @@ TEXT_STRING:
 ;
 
 ID:	
-	( 'A'..'Z' | 'a'..'z' | '_' | '$') ( 'A'..'Z' | 'a'..'z' | '_' | '$' | '0'..'9' )*
+	( 'A'..'Z' | 'a'..'z' | '_' | '$') ( 'A'..'Z' | 'a'..'z' | '_' | '$' | ':' | '0'..'9' )*
 ;
 
 // http://dev.mysql.com/doc/refman/5.6/en/user-variables.html

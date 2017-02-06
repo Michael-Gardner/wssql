@@ -8,57 +8,34 @@
 #ifndef ESP_SERVICES_WS_SQL_SQL2ECL_SQLOBJECT_HPP_
 #define ESP_SERVICES_WS_SQL_SQL2ECL_SQLOBJECT_HPP_
 
+#include <string>
 #include <jiface.hpp>
 #include <jscm.hpp>
 #include <jstring.hpp>
 #include <jlib.hpp>
 
-class SQLObject: public IInterface, public CInterface {
-	class SQLStatement;
+typedef enum _SQLStatementType {
+	Unknown=-1,
+	Select,
+	Call,
+	CreateAndLoad
+} SQLStatementType;
 
+class SQLObject: public IInterface, public CInterface {
 public:
 	IMPLEMENT_IINTERFACE;
+	SQLStatementType statementType;
+
 private:
-    IArrayOf<SQLStatement> selectList;
+    StringBufferArray fieldList;
 
 public:
-	SQLObject();
+    SQLObject();
 	virtual ~SQLObject();
-	bool addStatement(StringBuffer _type, StringBuffer _statement);
-
-
-private:
-	class SQLStatement {
-	private:
-		typedef enum _SQLStatementType {
-			Unknown=-1,
-			Select,
-			Call,
-			CreateAndLoad
-		} SQLStatementType;
-
-		SQLStatementType type;
-		StringBuffer original;
-		StringBuffer normalization;
-
-	public:
-		SQLStatement(StringBuffer _type, StringBuffer _original) {
-			original = _original;
-			if(!strcmp(_type,"Select"))
-				type = Select;
-			else if(!strcmp(_type,"Call"))
-				type = Call;
-			else if(!strcmp(_type,"CreateAndLoad"))
-				type = CreateAndLoad;
-			else
-				type = Unknown;
-			normalization = SQLStatement::Normalization(original);
-		}
-	private:
-		static StringBuffer Normalization(StringBuffer _original) {
-			return _original;
-		}
-	};
+	void addField(StringBufferItem& _fieldEntry);
+	void addField(const char * _fieldEntry);
+	void setType(SQLStatementType _type);
+	StringBuffer toString();
 };
 
 #endif /* ESP_SERVICES_WS_SQL_SQL2ECL_SQLOBJECT_HPP_ */
