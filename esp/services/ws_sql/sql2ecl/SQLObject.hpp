@@ -28,12 +28,15 @@ public:
 
 private:
     StringBufferArray fieldList;
+    StringBufferArray tableList;
 
 public:
     SQLObject();
 	virtual ~SQLObject();
-	void addField(StringBufferItem& _fieldEntry);
+	void addField(StringBuffer & s);
 	void addField(const char * _fieldEntry);
+	void addTable(StringBuffer & s);
+	void addTable(const char * _tableEntry);
 	void setType(SQLStatementType _type);
 	StringBuffer toString();
 };

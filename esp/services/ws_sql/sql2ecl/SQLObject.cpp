@@ -11,6 +11,7 @@
 SQLObject::SQLObject() {
 	statementType = Unknown;
 	fieldList.clear();
+	tableList.clear();
 }
 
 SQLObject::~SQLObject() {
@@ -18,20 +19,25 @@ SQLObject::~SQLObject() {
     fprintf(stderr, "\nDestroying sql object\n");
 #endif
     fieldList.clear();
+    tableList.clear();
 }
 
-void SQLObject::addField(StringBufferItem& _fieldEntry) {
-	fieldList.appendUniq(_fieldEntry);
+void SQLObject::addField(StringBuffer& s) {
+	fieldList.append(*new StringBufferItem(s));
 }
 
 void SQLObject::addField(const char * _fieldEntry) {
-	StringBufferItem field = StringBufferItem(_fieldEntry);
-	field.Link();
-	field.Link();
-	field.Link();
-	field.Link();
-
+	StringBuffer field = StringBuffer(_fieldEntry);
 	addField(field);
+}
+
+void SQLObject::addTable(StringBuffer& s) {
+	tableList.append(*new StringBufferItem(s));
+}
+
+void SQLObject::addTable(const char * _tableEntry) {
+	StringBuffer table = StringBuffer(_tableEntry);
+	addField(table);
 }
 
 void SQLObject::setType(SQLStatementType _type) {
@@ -52,8 +58,14 @@ StringBuffer SQLObject::toString() {
 						break;
 	}
 	output.appendf("fieldList: %i\n",fieldList.length());
-	ForEachItemIn(idx,fieldList) {
-		output.appendf("\t%s\n",fieldList.tos(idx).str());
+	ForEachItemIn(fdx,fieldList) {
+		output.appendf("\t%s\n",fieldList.tos(fdx).str());
 	}
+
+	output.appendf("tableList: %i\n",tableList.length());
+	ForEachItemIn(tdx,tableList) {
+		output.appendf("\t%s\n",tableList.tos(tdx).str());
+	}
+
 	return output;
 }

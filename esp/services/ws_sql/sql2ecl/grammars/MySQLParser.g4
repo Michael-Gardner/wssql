@@ -419,6 +419,18 @@ predicate:
 	| ( bit_expr (NOT_SYM)? REGEXP bit_expr ) 
 	| ( bit_expr )  
 ;
+
+b_expr	:
+		  b_expr VERTBAR b_expr						#bitExprBitOr
+		| b_expr BITAND b_expr						#bitExprBitAnd
+		| b_expr (SHIFT_LEFT|SHIFT_RIGHT) b_expr    #bitExprBitwiseManipulation
+		| b_expr (PLUS|MINUS) b_expr				#bitExprUnary
+		| b_expr (ASTERISK|DIVIDE|MOD_SYM|POWER_OP) b_expr	#bitExprMult
+		| b_expr (PLUS|MINUS) interval_expr			#bitExprAdd
+		| b_expr (COLLATE_SYM collation_names)?     #bitExprCollate
+		| simple_expr								#simple_expression
+;
+
 bit_expr:
 	factor1 ( VERTBAR factor1 )? ;
 factor1:
@@ -500,6 +512,18 @@ interval_expr:
 table_references:
         table_reference ( COMMA table_reference )*
 ;
+
+Mtable_reference:
+	  table_reference (INNER_SYM|CROSS)? JOIN_SYM table_reference (join_condition)?	#trJoin
+	| table_reference STRAIGHT_JOIN table_reference (ON expression)?				#trStraightJoin
+	| table_reference (LEFT|RIGHT) (OUTER)? JOIN_SYM table_reference join_condition #trLeftRightJoin
+	| table_reference NATURAL (LEFT|RIGHT) (OUTER)? JOIN_SYM table_reference		#trNaturalJoin
+	| table_spec (partition_clause)? (alias)? (index_hint_list)?					#tr
+	| subquery_alias																#trSubquery
+	| LPAREN table_references RPAREN												#trNestedTableReferences
+	| OJ_SYM table_reference LEFT OUTER JOIN_SYM table_reference ON expression		#trLeftOuterJoin
+;
+
 table_reference:
 	table_factor1 | table_atom
 ;

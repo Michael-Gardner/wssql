@@ -10,7 +10,7 @@ using namespace antlr4;
 
 int main(int,const char **)
 {
-	std::string query = "select ALL thor::num from tab, bob, foo;";
+	std::string query = "select my.own.food as dinner, amanda.rose.kalmutz gardner from tab, bob, foo;";
 	ANTLRInputStream input(query);
 	MySQLLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);

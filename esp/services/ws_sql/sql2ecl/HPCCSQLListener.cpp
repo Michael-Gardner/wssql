@@ -27,17 +27,31 @@ void HPCCSQLListener::enterCreate_database_statement(
 
 void HPCCSQLListener::enterColumn_field_name(
 		MySQLParser::Column_field_nameContext * ctx) {
-	StringBufferItem sbi = StringBufferItem();
+	StringBuffer s = StringBuffer();
 	if(ctx->schema_name())
-		sbi.appendf("%s.",ctx->schema_name()->getText().c_str());
+		s.appendf("%s.",ctx->schema_name()->getText().c_str());
 	if(ctx->table_name())
-		sbi.appendf("%s.",ctx->table_name()->getText().c_str());
+		s.appendf("%s.",ctx->table_name()->getText().c_str());
 	if(ctx->ASTERISK())
-		sbi.append("*");
+		s.append("*");
 	else
-		sbi.appendf("%s",ctx->column_name()->getText().c_str());
+		s.appendf("%s",ctx->column_name()->getText().c_str());
 	if(ctx->alias())
-		sbi.appendf(" %s",ctx->alias()->getText().c_str());
-	std::cout << "sbi == " << sbi << std::endl;
-	sqlObject.addField(sbi);
+		if(ctx->alias()->AS_SYM())
+			s.appendf(" %s",ctx->alias()->AS_SYM()->getText().c_str());
+		s.appendf(" %s",ctx->alias()->ID()->getText().c_str());
+	sqlObject.addField(s.str());
+}
+
+void HPCCSQLListener::enterColumn_field_expr(
+		MySQLParser::Column_field_exprContext * ctx) {
+	StringBuffer s = StringBuffer();
+	// TODO: bit expressions
+	sqlObject.addField(s.str());
+}
+
+void HPCCSQLListener::enterTable_reference(
+		MySQLParser::Table_referenceContext * ctx) {
+	StringBuffer s = StringBuffer(ctx->table_atom()->table_spec()->getText().c_str());
+	sqlObject.addTable(s);
 }
