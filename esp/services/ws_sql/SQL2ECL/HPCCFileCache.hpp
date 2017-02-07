@@ -22,10 +22,10 @@ limitations under the License.
 #include "ws_sql_esp.ipp"
 #include "dadfs.hpp"
 #include "dasess.hpp"
-#include "HPCCFile.hpp"
-#include "SQLTable.hpp"
 #include "fileview.hpp"
 #include "fvrelate.hpp"
+#include "../SQL2ECL/HPCCFile.hpp"
+#include "../SQL2ECL/SQLTable.hpp"
 
 typedef HPCCFile * HPCCFilePtr;
 typedef MapStringTo<HPCCFilePtr> HpccFiles;

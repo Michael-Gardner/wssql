@@ -28,7 +28,12 @@ int main(int,const char **)
 	std::cout << tree->toStringTree(&parser) << std::endl;
 
 	SQLObject sqlObject = listener->getSQL();
+
+	if(!sqlObject.isAlive())
+		std::cout << "Warning! sqlObject doesn't exist" << std::endl;
+	std::cout << "printing out sqlObject" << std::endl;
 	std::cout << sqlObject.toString() << std::endl;
+	std::cout << "finishing" << std::endl;
 
 	return 0;
 }

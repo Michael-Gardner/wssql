@@ -24,23 +24,20 @@ void HPCCSQLListener::enterCreate_database_statement(
 	sqlObject.statementType = CreateAndLoad;
 }
 
-void HPCCSQLListener::enterTable_spec(MySQLParser::Table_specContext * ctx) {
-	tree::ParseTree * pctx = ctx->parent;
-	std::cout << "tspec -> " << pctx->toString() << std::endl;
-}
 
-void HPCCSQLListener::enterDisplayed_column(
-		MySQLParser::Displayed_columnContext* ctx) {
+void HPCCSQLListener::enterColumn_field_name(
+		MySQLParser::Column_field_nameContext * ctx) {
+	StringBufferItem sbi = StringBufferItem();
+	if(ctx->schema_name())
+		sbi.appendf("%s.",ctx->schema_name()->getText().c_str());
+	if(ctx->table_name())
+		sbi.appendf("%s.",ctx->table_name()->getText().c_str());
 	if(ctx->ASTERISK())
-		std::cout << "TODO:: enterDisplayed_column().asterisk() :: " << ctx->getText() << std::endl;
-	else if(ctx->column_spec()) {
-		sqlObject.addField(ctx->column_spec()->getText().c_str());
-	} else if(ctx->table_spec())
-		std::cout << "Table_spec found " << ctx->table_spec()->getText() << std::endl;
-	else if (ctx->alias())
-		std::cout << "Alias found " << ctx->alias()->getText() << std::endl;
-	else if (ctx->bit_expr())
-		std::cout << "bit_expr found " << ctx->bit_expr()->getText() << std::endl;
+		sbi.append("*");
 	else
-		std::cout << "ERROR: found nothing at " << ctx->getText() << std::endl;
+		sbi.appendf("%s",ctx->column_name()->getText().c_str());
+	if(ctx->alias())
+		sbi.appendf(" %s",ctx->alias()->getText().c_str());
+	std::cout << "sbi == " << sbi << std::endl;
+	sqlObject.addField(sbi);
 }

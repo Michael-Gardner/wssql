@@ -19,8 +19,6 @@ public:
     void enterSelect_statement(MySQLParser::Select_statementContext * ctx);
     void enterCall_statement(MySQLParser::Call_statementContext * ctx);
     void enterCreate_database_statement(MySQLParser::Create_database_statementContext * ctx);
-    void enterDisplayed_column(MySQLParser::Displayed_columnContext * ctx);
-    void enterTable_spec(MySQLParser::Table_specContext * ctx);
-
+    void enterColumn_field_name(MySQLParser::Column_field_nameContext * ctx);
 };
 #endif /* ESP_SERVICES_WS_SQL_SQL2ECL_HPCCSQLLISTENER_HPP_ */

@@ -22,6 +22,9 @@ limitations under the License.
 
 class  SQLColumn : public CInterface, public IInterface
 {
+public:
+    IMPLEMENT_IINTERFACE;
+
 private:
     StringBuffer name;
     StringBuffer alias;
@@ -31,7 +34,6 @@ private:
     StringBuffer columnType;
 
 public:
-    IMPLEMENT_IINTERFACE;
     SQLColumn();
     SQLColumn(const char* parentname, const char* columnname, const char* alias, int position);
     virtual ~SQLColumn();
@@ -117,6 +119,9 @@ public:
 
 class HPCCColumnMetaData : public CInterface, public IInterface
 {
+public:
+    IMPLEMENT_IINTERFACE;
+
 private:
     StringBuffer columnName;
     StringBuffer tableName;
@@ -127,7 +132,6 @@ private:
     bool keyedField;
 
 public:
-    IMPLEMENT_IINTERFACE;
 
     static HPCCColumnMetaData * createHPCCColumnMetaData(const char * name)
     {

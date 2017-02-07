@@ -1,41 +1,63 @@
 
 lexer grammar WSSQLLexer;
 
+TOKEN_ID:	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'_'|'-'|':'|'*')*;
+TOKEN_INT: ('1'..'9') ('0'..'9')*;
+
 // sql keywords
-STATEMENT: _S_T_A_T_E_M_E_N_T;
-FROM: _F_R_O_M;
-WHERE: _W_H_E_R_E;
-AS: _A_S;
-IF: _I_F;
-SQL_NULL: _N_U_L_L;
+TOKEN_SELECT: S E L E C T;
+TOKEN_INSERT: I N S E R T;
+TOKEN_FROM: F R O M;
+TOKEN_WHERE: W H E R E;
+TOKEN_AS: A S;
+TOKEN_IF: I F;
+TOKEN_INTO: I N T O;
+TOKEN_NULL: N U L L;
 
-ID:	[a-zA-Z_-:\*];
+// logical operators
+TOKEN_GREATER_THAN: '>';
+TOKEN_GREATER_OR_EQUAL: '>=';
+TOKEN_LESS_THAN: '<';
+TOKEN_LESS_OR_EQUAL: '<=';
+TOKEN_EQUAL: '==';
+TOKEN_NOT_EQUAL: '!=';
+TOKEN_AND: A N D | '&&';
+TOKEN_OR: O R | '||';
+TOKEN_ASTERISK: '*';
+TOKEN_PLUS: '+';
+TOKEN_MINUS: '-';
+TOKEN_MOD: '%';
+TOKEN_DIVIDE: '/';
+TOKEN_NOT: N O T;
+TOKEN_IN: I N;
 
-WS: [ \t\r\n];
 
-fragment _A: a|A;
-fragment _B: b|B;
-fragment _C: c|C;
-fragment _D: d|D;
-fragment _E: e|E;
-fragment _F: f|F;
-fragment _G: g|G;
-fragment _H: h|H;
-fragment _I: i|I;
-fragment _J: j|J;
-fragment _K: k|K;
-fragment _L: l|L;
-fragment _M: m|M;
-fragment _N: n|N;
-fragment _O: o|O;
-fragment _P: p|P;
-fragment _Q: q|Q;
-fragment _R: r|R;
-fragment _S: s|S;
-fragment _T: t|T;
-fragment _U: u|U;
-fragment _V: v|V;
-fragment _W: w|W;
-fragment _X: x|X;
-fragment _Y: y|Y;
-fragment _Z: z|Z;
+
+TOKEN_WS: [ \t\n\r]+ -> skip;
+
+fragment A: [aA];
+fragment B: [bB];
+fragment C: [cC];
+fragment D: [dD];
+fragment E: [eE];
+fragment F: [fF];
+fragment G: [gG];
+fragment H: [hH];
+fragment I: [iI];
+fragment J: [jJ];
+fragment K: [kK];
+fragment L: [lL];
+fragment M: [mM];
+fragment N: [nN];
+fragment O: [oO];
+fragment P: [pP];
+fragment Q: [qQ];
+fragment R: [rR];
+fragment S: [sS];
+fragment T: [tT];
+fragment U: [uU];
+fragment V: [vV];
+fragment W: [wW];
+fragment X: [xX];
+fragment Y: [yY];
+fragment Z: [zZ];

@@ -15,7 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "ECLEngine.hpp"
+#include "../SQL2ECL/ECLEngine.hpp"
+
 #include <limits>       // std::numeric_limits
 
 const char * ECLEngine::SELECTOUTPUTNAME = "WSSQLSelectQueryResult";

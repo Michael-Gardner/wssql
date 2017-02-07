@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "SQLJoin.hpp"
+#include "../SQL2ECL/SQLJoin.hpp"
 
 SQLJoinType SQLJoin::defaultType = SQLJoinTypeInner;
 

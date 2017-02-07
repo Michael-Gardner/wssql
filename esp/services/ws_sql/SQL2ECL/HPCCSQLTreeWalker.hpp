@@ -35,13 +35,13 @@ limitations under the License.
 #include "WSSQLParser.h"
 #include "WSSQLParserBaseListener.h"
 
-#include "SQLColumn.hpp"
-#include "SQLTable.hpp"
-#include "SQLExpression.hpp"
-#include "HPCCFile.hpp"
-#include "HPCCFileCache.hpp"
-#include "ECLFunction.hpp"
-#include "SQLJoin.hpp"
+#include <SQLColumn.hpp>
+#include <SQLTable.hpp>
+#include <SQLExpression.hpp>
+#include <HPCCFile.hpp>
+#include <HPCCFileCache.hpp>
+#include <ECLFunction.hpp>
+#include <SQLJoin.hpp>
 
 typedef enum _SQLQueryType
 {

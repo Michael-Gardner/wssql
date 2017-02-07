@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "SQLExpression.hpp"
+#include "../SQL2ECL/SQLExpression.hpp"
 
 /***********************SQLFieldsExpression START**************************************************************************/
 

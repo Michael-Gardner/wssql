@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "ECLFunction.hpp"
+#include "../SQL2ECL/ECLFunction.hpp"
 
 bool ECLFunctions::funcsinited = false;
 std::map<std::string,ECLFunctionDefCfg> ECLFunctions::eclfuncstable;

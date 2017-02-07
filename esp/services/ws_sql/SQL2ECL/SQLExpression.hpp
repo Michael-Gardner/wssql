@@ -18,8 +18,8 @@ limitations under the License.
 #define SQLEXPRESSION_HPP_
 
 #include "ws_sql.hpp"
-#include "SQLColumn.hpp"
-#include "ECLFunction.hpp"
+#include "../SQL2ECL/ECLFunction.hpp"
+#include "../SQL2ECL/SQLColumn.hpp"
 
 /* undef SOCKET definitions to avoid collision in Antlrdefs.h*/
 #ifdef INVALID_SOCKET
@@ -30,7 +30,6 @@ limitations under the License.
     //#pragma message( "UNDEFINING SOCKET - Will be redefined by ANTLRDEFS.h" )
     #undef SOCKET
 #endif
-//#include "WSSQLLexer.h"
 /* undef SOCKET definitions to avoid collision in Antlrdefs.h*/
 
 typedef enum _SQLExpressionType
@@ -621,23 +620,24 @@ public:
     {
         switch (op)
         {
-            case AND_SYM:
-            case OR_SYM:
+            case TOKEN_AND:
+            case TOKEN_OR:
                 return Bool_LogicType;
-            case DIVIDE:
-            case GTH:
-            case GET:
-            case LTH:
-            case LET:
-            case MINUS:
-            case MOD:
-            case ASTERISK:
-            case PLUS:
+            case TOKEN_DIVIDE:
+            case TOKEN_GREATER_THAN:
+            case TOKEN_GREATER_OR_EQUAL:
+            case TOKEN_LESS_THAN:
+            case TOKEN_GREATER_OR_EQUAL:
+            case TOKEN_MINUS:
+            case TOKEN_MOD:
+            case TOKEN_ASTERISK:
+            case TOKEN_PLUS:
                 return Numeric_LogicType;
-            case EQ_SYM:
-            case NOT_EQ:
-            case IN_SYM:
-            case NOT_IN:
+            case TOKEN_EQUAL:
+            case TOKEN_NOT_EQUAL:
+            case TOKEN_IN:
+			// TODO: re-evaluate NOT to be negation
+            case TOKEN_NOT:
             {
                 SQLLogicType op1type =operand1->getLogicType();
                 SQLLogicType op2type =operand2->getLogicType();
@@ -731,24 +731,25 @@ public:
         StringBuffer defaulteclvalue;
         switch (op)
         {
-            case AND_SYM:
-            case OR_SYM:
+            case TOKEN_AND:
+            case TOKEN_OR:
                 eclstr.append( "BOOLEAN ");
                 defaulteclvalue.set(" FALSE ");
                 break;
-            case DIVIDE:
-            case MINUS:
-            case MOD:
-            case ASTERISK:
-            case GTH:
-            case GET:
-            case LTH:
-            case LET:
-            case PLUS:
-            case EQ_SYM:
-            case NOT_EQ:
-            case IN_SYM:
-            case NOT_IN:
+            case TOKEN_DIVIDE:
+            case TOKEN_MINUS:
+            case TOKEN_MOD:
+            case TOKEN_ASTERISK:
+            case TOKEN_GREATER_THAN:
+            case TOKEN_GREATER_OR_EQUAL:
+            case TOKEN_LESS_THAN:
+            case TOKEN_LESS_OR_EQUAL:
+            case TOKEN_PLUS:
+            case TOKEN_EQUAL:
+            case TOKEN_NOT_EQUAL:
+            case TOKEN_IN:
+			// TODO: Same as above, fix to be negation
+            case TOKEN_NOT:
             {
                 switch (sibtype)
                 {

@@ -19,7 +19,7 @@ limitations under the License.
 #define SQLTABLE_HPP_
 
 #include "ws_sql.hpp"
-#include "SQLJoin.hpp"
+#include "../SQL2ECL/SQLJoin.hpp"
 
 class SQLTable : public CInterface, public IInterface
 {

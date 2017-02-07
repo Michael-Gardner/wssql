@@ -15,9 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "SQLColumn.hpp"
+#include "../SQL2ECL/SQLColumn.hpp"
 
-SQLColumn::SQLColumn() {}
 SQLColumn::SQLColumn(const char * parentname, const char * columnname, const char * alias, int position)
 {
     this->parenttable.clear();

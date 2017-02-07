@@ -19,11 +19,10 @@ limitations under the License.
 #define HPCCFILE_HPP_
 
 #include "ws_sql.hpp"
-#include "SQLColumn.hpp"
-
 #include "ws_sql_esp.ipp"
 #include "hqlerror.hpp"
 #include "hqlexpr.hpp"
+#include "../SQL2ECL/SQLColumn.hpp"
 
 /* undef SOCKET definitions to avoid collision in Antlrdefs.h*/
 #ifdef INVALID_SOCKET

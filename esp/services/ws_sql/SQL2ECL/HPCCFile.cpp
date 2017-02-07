@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "HPCCFile.hpp"
+#include "../SQL2ECL/HPCCFile.hpp"
 
 HPCCFileFormat HPCCFile::DEFAULTFORMAT = HPCCFileFormatFlat;
 

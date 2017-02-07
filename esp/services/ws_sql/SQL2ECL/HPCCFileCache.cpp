@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ############################################################################## */
 
-#include "HPCCFileCache.hpp"
+#include "../SQL2ECL/HPCCFileCache.hpp"
 
 
 HPCCFileCache * HPCCFileCache::createFileCache(const char * username, const char * passwd)

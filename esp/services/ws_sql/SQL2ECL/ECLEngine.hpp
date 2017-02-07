@@ -19,9 +19,9 @@ limitations under the License.
 #define ECLENGINE_HPP_
 
 #include "HPCCSQLTreeWalker.hpp"
-#include "HPCCFile.hpp"
-#include "SQLColumn.hpp"
 #include "dautils.hpp"
+#include "../SQL2ECL/HPCCFile.hpp"
+#include "../SQL2ECL/SQLColumn.hpp"
 
 #define NumberOfCommonParamInThisIndex_WEIGHT    5
 #define NumberofColsKeyedInThisIndex_WEIGHT      2

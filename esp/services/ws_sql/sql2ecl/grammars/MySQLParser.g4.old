@@ -642,7 +642,8 @@ select_statement:
 ;
 
 select_expression:
-	SELECT
+	SELECT 
+	
 	( ALL | DISTINCT | DISTINCTROW )? 
 	(HIGH_PRIORITY)?
 	(STRAIGHT_JOIN)?
@@ -706,9 +707,11 @@ table_spec:
 ;
 
 displayed_column :
-	( (schema_name DOT)? (table_name DOT)? (ASTERISK | column_name (alias)? ) ) #column_field_name
+	( table_spec DOT ASTERISK )
+	|
+	( column_spec (alias)? )
 	| 
-	( bit_expr (alias)? ) #column_field_expr
+	( bit_expr (alias)? )
 ;
 
 

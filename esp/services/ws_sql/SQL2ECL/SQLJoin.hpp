@@ -18,7 +18,7 @@ limitations under the License.
 #define SQLJOIN_HPP_
 
 #include "ws_sql.hpp"
-#include "SQLExpression.hpp"
+#include "../SQL2ECL/SQLExpression.hpp"
 
 typedef enum _SQLJoinType
 {
