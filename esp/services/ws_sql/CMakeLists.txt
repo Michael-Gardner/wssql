@@ -14,40 +14,29 @@
 #    limitations under the License.
 ################################################################################
 # Component: ws_sql
-#####################################################
+#
 # Description:
-# ------------
 #    Cmake Input File for ws_sql
-#####################################################
+################################################################################
 
 project(ws_sql)
-
-find_package(Java REQUIRED)
-find_package(ANTLR REQUIRED)
-include(${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/buildANTLR3c.cmake)
-
 include(${HPCC_WSSQL_SOURCE_DIR}/esp/scm/additional.cmake)
-set(o_PLATFORM ${PLATFORM})
-set(PLATFORM OFF)
-include(${HPCC_SOURCE_DIR}/esp/scm/espscm.cmake)
-set(PLATFORM ${o_PLATFORM})
-unset(o_PLATFORM)
 
-antlr_target(sql2ecl
+find_package(ANTLR4 REQUIRED)
+antlr4_target(hpccsql
     GRAMMAR_PREFIX HPCCSQL
-    DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-    GRAMMAR_FILES "${CMAKE_CURRENT_SOURCE_DIR}/SQL2ECL/ANTLR3c/HPCCSQL.g"
+    LANGUAGE Cpp
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+    GRAMMAR_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/SQL2ECL/grammars/HPCCSQLLexer.g4
+        ${CMAKE_CURRENT_SOURCE_DIR}/SQL2ECL/grammars/HPCCSQLParser.g4
+    GENERATE_VISITOR
     )
 
 set(SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/ws_sqlPlugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ws_sqlService.cpp
-    ${ESPSCM_GENERATED_DIR}/common_esp.cpp
     ${ESPSCM_GENERATED_DIR}/ws_sql_esp.cpp
-    ${ESPSCM_GENERATED_DIR}/ws_workunits_esp.cpp
-    ${ESPSCM_GENERATED_DIR}/ws_topology_esp.cpp
-    ${HPCC_SOURCE_DIR}/esp/services/ws_ecl/ws_ecl_wuinfo.cpp
-    ${HPCC_SOURCE_DIR}/esp/services/ws_workunits/ws_workunitsHelpers.cpp
+    ws_sqlPlugin.cpp
+    ws_sqlService.cpp
     SQL2ECL/HPCCFileCache.cpp
     SQL2ECL/HPCCFile.cpp
     SQL2ECL/ECLFunction.cpp
@@ -57,15 +46,13 @@ set(SRCS
     SQL2ECL/SQLExpression.cpp
     SQL2ECL/SQLJoin.cpp
     SQL2ECL/HPCCSQLTreeWalker.cpp
-    ${ANTLR_sql2ecl_SOURCES}
+    ${ANTLR4_hpccsql_SOURCES}
     )
 
-message(STATUS "antlr3c include dir: ${ANTLR3c_INCLUDE_DIR}")
 include_directories(
-    ##added for build-config.h
     ${CMAKE_BINARY_DIR}
-    ##added for build-config.h
     ${CMAKE_BINARY_DIR}/oss
+    ${ESPSCM_GENERATED_DIR}
     ${HPCC_WSSQL_SOURCE_DIR}/esp/services/ws_sql/SQL2ECL
     ${HPCC_SOURCE_DIR}/esp/bindings
     ${HPCC_SOURCE_DIR}/esp/bindings/SOAP/xpp
@@ -93,26 +80,43 @@ include_directories(
     ${HPCC_SOURCE_DIR}/common/dllserver
     ${HPCC_SOURCE_DIR}/common/deftype
     ${HPCC_SOURCE_DIR}/ecl/hql
-    ${ANTLR3c_INCLUDE_DIR}
-    ${ESPSCM_GENERATED_DIR}
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/atn
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/dfa
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/misc
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/support
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/tree
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/tree/pattern
+    ${CMAKE_SOURCE_DIR}/antlr4/runtime/Cpp/runtime/src/tree/xpath
     )
 
 add_definitions(-D_USRDLL)
-HPCC_ADD_LIBRARY(ws_sql SHARED ${SRCS})
-add_dependencies(ws_sql espscm wssqlespscm sql2ecl)
+add_library(ws_sql SHARED ${SRCS})
+set_target_properties(ws_sql PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+    )
+add_dependencies(ws_sql wssqlespscm hpccsql)
 target_link_libraries(
     ws_sql
+    ws_workunits
+    ws_ecl
     ws_dfu
     jlib
     xmllib
     esphttp
     securesocket
     dalibase
-    libantlr3c
-    wuwebview
+    antlr4_shared
     )
-install(TARGETS ws_sql
-    RUNTIME DESTINATION ${EXEC_DIR}
+
+install(
+    TARGETS ws_sql
     LIBRARY DESTINATION ${LIB_DIR}
     COMPONENT Runtime
+    )
+install(FILES ${CMAKE_SOURCE_DIR}/antlr4/LICENSE.txt
+    DESTINATION .
+    RENAME antlr4cpp-license.txt
     )

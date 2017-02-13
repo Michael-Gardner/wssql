@@ -1,3 +1,6 @@
 [submodule "HPCC-Platform"]
 	path = HPCC-Platform
 	url = https://github.com/hpcc-systems/HPCC-Platform.git
+[submodule "antlr4"]
+	path = antlr4
+	url = https://github.com/antlr/antlr4.git

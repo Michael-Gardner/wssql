@@ -42,3 +42,5 @@ Steps for building in Linux:
 If a user wishes to do a parallel build:
 - Check out pre-req source hpcc-systems/HPCC-Platform
   - check ~/wssql/platform-version-prereq.cmake for minimum version required
+
+sudo apt-get install antlr4 libstringtemplate4-java libantlr4-runtime-java libantlr3-runtime-java

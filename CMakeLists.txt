@@ -92,6 +92,7 @@ if(NOT MAKE_DOCS_ONLY)
     add_subdirectory(${HPCC_SOURCE_DIR} oss EXCLUDE_FROM_ALL)
     message(STATUS "End setup of HPCC-Platform build dependency")
 
+    add_subdirectory(antlr4/runtime/Cpp)
     HPCC_add_subdirectory(esp)
     HPCC_add_subdirectory(initfiles)
 
