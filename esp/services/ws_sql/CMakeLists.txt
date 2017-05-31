@@ -25,10 +25,13 @@ PROJECT( ws_sql )
 # Java and ANTLR needed for generating lexer and parser
 FIND_PACKAGE(Java REQUIRED)
 FIND_PACKAGE(ANTLR REQUIRED)
+FIND_PACKAGE(ANTLR3C)
 
-#antlr3c must be built in order to build with the generated lexer.c and parser.c
-INCLUDE (${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/buildANTLR3c.cmake)
-#INCLUDE (${CMAKE_MODULE_PATH}FindANTLR3c.cmake)
+# TODO: currently ANTLR3c to ANTLR3C will cause issues
+if(NOT ANTLR3C_FOUND)
+    INCLUDE (${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/buildANTLR3c.cmake)
+endif()
+
 INCLUDE(${HPCC_WSSQL_SOURCE_DIR}/esp/scm/additional.cmake)
 set(o_PLATFORM ${PLATFORM})
 set(PLATFORM OFF)
@@ -43,7 +46,7 @@ SET (HPCC_SQL_PARSER_GRAMMAR_NAME HPCCSQL.g)
 #java -jar antlr-3.4-complete.jar -o /home/hpccuser/GIT/HPCC-Platform/esp/services/ws_sql/SQL2ECL/ -report -traceTreeParser /usr/local/eclipse/workspaces/antlr/mysql/HPCCSQL.g
 
 #The actual java command to generate lexer and parser
-SET (ANTLR3c_COMMAND ${Java_JAVA_EXECUTABLE} "-jar" ${ANTLR_BUILDTIME_JAR} ${HPCC_SQL_PARSER_GRAMMAR_PATH}/${HPCC_SQL_PARSER_GRAMMAR_NAME} "-o" ${HPCC_SQL_PARSER_LOCATION})
+SET (ANTLR3_COMMAND ${Java_JAVA_EXECUTABLE} "-jar" ${ANTLR_BUILDTIME_JAR} ${HPCC_SQL_PARSER_GRAMMAR_PATH}/${HPCC_SQL_PARSER_GRAMMAR_NAME} "-o" ${HPCC_SQL_PARSER_LOCATION})
 
 #The lexer and parser targets
 SET (ANTLR_GENERATED_LEXER  ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLLexer.c)
@@ -52,7 +55,7 @@ SET (ANTLR_GENERATED_PARSER ${HPCC_SQL_PARSER_LOCATION}/HPCCSQLParser.c)
 #Create the ANTLR generated c targeted lexer and parser
 ADD_CUSTOM_COMMAND(
         OUTPUT ${ANTLR_GENERATED_LEXER} ${ANTLR_GENERATED_PARSER}
-        COMMAND ${ANTLR3c_COMMAND}
+        COMMAND ${ANTLR3_COMMAND}
 )
 
 SET(    SRCS
@@ -109,7 +112,7 @@ INCLUDE_DIRECTORIES (
         ${HPCC_SOURCE_DIR}/common/dllserver
         ${HPCC_SOURCE_DIR}/common/deftype
         ${HPCC_SOURCE_DIR}/ecl/hql
-        ${ANTLR3c_INCLUDE_DIR}
+        ${ANTLR3C_INCLUDE_DIR}
         ${ESPSCM_GENERATED_DIR}
     )
 
@@ -128,6 +131,6 @@ TARGET_LINK_LIBRARIES (
         esphttp
         securesocket
         dalibase
-        libantlr3c
+        ${ANTLR3C_LIBRARY}
         wuwebview    
 )
