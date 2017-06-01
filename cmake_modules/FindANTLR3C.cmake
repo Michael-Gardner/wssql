@@ -6,21 +6,17 @@
 #    You may obtain a copy of the License at
 #
 #       http://www.apache.org/licenses/LICENSE-2.0
-#
 #    Unless required by applicable law or agreed to in writing, software
 #    distributed under the License is distributed on an "AS IS" BASIS,
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 ################################################################################
-# - Try to find the ANTLR 3 c library
-# Once done this will define
 #
 #  ANTLR3C_FOUND       - System has the ANTLR3C library
 #  ANTLR3C_INCLUDE_DIR - The ANTLR3C include directory
 #  ANTLR3C_LIBRARY     - The libraries needed to use ANTLR3C
 ################################################################################
-
 
 if(WIN32)
     set(LIB_NAME "antlr3c.lib")
