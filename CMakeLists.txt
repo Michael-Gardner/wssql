@@ -43,25 +43,19 @@
 
 PROJECT (hpccsystems-wssql)
 
-if(UNIX AND NOT APPLE)
-    cmake_minimum_required(VERSION 3.3.2)
-else()
-    cmake_minimum_required(VERSION 2.8.11)
-endif()
+cmake_minimum_required(VERSION 3.3.2)
 
 set ( CMAKE_PROJECT_NAME "hpccsystems-wssql")
 
 set (HPCC_WSSQL_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set (HPCC_SOURCE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 IF ("${HPCC_SOURCE_DIR}" STREQUAL "")
-  SET (HPCC_SOURCE_DIR ${HPCC_SOURCE_ROOT_DIR}/HPCC-Platform)
+    SET (HPCC_SOURCE_DIR ${HPCC_WSSQL_SOURCE_DIR}/HPCC-Platform)
 ENDIF()
 
 SET (CMAKE_MODULE_PATH "${HPCC_WSSQL_SOURCE_DIR}/cmake_modules")
 
 INCLUDE(${HPCC_WSSQL_SOURCE_DIR}/version.cmake)
-INCLUDE(${HPCC_WSSQL_SOURCE_DIR}/platform-version-prereq.cmake)
 INCLUDE(${HPCC_SOURCE_DIR}/version.cmake)
 
 INCLUDE(${CMAKE_MODULE_PATH}/optionDefaults.cmake)
@@ -87,9 +81,9 @@ IF ( NOT MAKE_DOCS_ONLY )
     OPTION(USE_NATIVE_LIBRARIES "Search standard OS locations for thirdparty libraries" ON)
 
     IF (USE_EXTERNALS)
-      IF ("${EXTERNALS_DIRECTORY}" STREQUAL "")
-        SET (EXTERNALS_DIRECTORY ${HPCC_SOURCE_ROOT_DIR}/externals)
-      ENDIF()
+        IF ("${EXTERNALS_DIRECTORY}" STREQUAL "")
+            SET (EXTERNALS_DIRECTORY ${CMAKE_SOURCE_DIR}/../externals)
+        ENDIF()
     ENDIF()
 
     MESSAGE("*** START SETTING UP HPCC PLATFORM ***")
@@ -125,7 +119,7 @@ IF ( NOT MAKE_DOCS_ONLY )
         ${COMPONENTFILES_PATH}
         ${COMPONENTFILES_PATH}/configxml
         ${COMPONENTFILES_PATH}/configxml/@temp
-    )
+        )
 
     SET(CPACK_RPM_PACKAGE_VENDOR "HPCC Systems")
     SET(CPACK_PACKAGE_VENDOR "HPCC Systems")
@@ -147,20 +141,20 @@ IF ( NOT MAKE_DOCS_ONLY )
     IF ( APPLE )
     ELSEIF ( UNIX )
         EXECUTE_PROCESS (
-                    COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/distrocheck.sh
-                        OUTPUT_VARIABLE packageManagement
-                            ERROR_VARIABLE  packageManagement
-                    )
+            COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/distrocheck.sh
+            OUTPUT_VARIABLE packageManagement
+            ERROR_VARIABLE  packageManagement
+            )
         EXECUTE_PROCESS (
-                    COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/getpackagerevisionarch.sh
-                        OUTPUT_VARIABLE packageRevisionArch
-                            ERROR_VARIABLE  packageRevisionArch
-                    )
+            COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/getpackagerevisionarch.sh
+            OUTPUT_VARIABLE packageRevisionArch
+            ERROR_VARIABLE  packageRevisionArch
+            )
         EXECUTE_PROCESS (
-                    COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/getpackagerevisionarch.sh --noarch
-                        OUTPUT_VARIABLE packageRevision
-                            ERROR_VARIABLE  packageRevision
-                    )
+            COMMAND ${HPCC_SOURCE_DIR}/cmake_modules/getpackagerevisionarch.sh --noarch
+            OUTPUT_VARIABLE packageRevision
+            ERROR_VARIABLE  packageRevision
+            )
 
         MESSAGE ( "-- Auto Detecting Packaging type")
         MESSAGE ( "-- distro uses ${packageManagement}, revision is ${packageRevisionArch}" )
@@ -170,19 +164,19 @@ IF ( NOT MAKE_DOCS_ONLY )
         ELSEIF ( "${packageManagement}" STREQUAL "RPM" )
             set(CPACK_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME_PREFIX}-${version}-${stagever}.${packageRevisionArch}")
             set ( CPACK_RPM_SPEC_MORE_DEFINE
-"%define _use_internal_dependency_generator 0
-%define __getdeps() while read file; do /usr/lib/rpm/rpmdeps -%{1} ${file} | %{__grep} -v libantlr3c.so ; done | /bin/sort -u
-%define __find_provides /bin/sh -c '%{__getdeps P}'
-%define __find_requires /bin/sh -c '%{__getdeps R}'" )
-        ELSE ()
-            set(CPACK_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME_PREFIX}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
+                "%define _use_internal_dependency_generator 0
+                %define __getdeps() while read file; do /usr/lib/rpm/rpmdeps -%{1} ${file} | %{__grep} -v libantlr3c.so ; done | /bin/sort -u
+                %define __find_provides /bin/sh -c '%{__getdeps P}'
+                %define __find_requires /bin/sh -c '%{__getdeps R}'" )
+            ELSE ()
+                set(CPACK_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME_PREFIX}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
+            ENDIF ()
         ENDIF ()
-    ENDIF ()
-    MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
+        MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
 
-    SET( CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME_PREFIX}-${version}" )
-    SET( CPACK_SOURCE_GENERATOR TGZ )
-    SET(CPACK_SOURCE_IGNORE_FILES
+        SET( CPACK_SOURCE_PACKAGE_FILE_NAME "${PACKAGE_FILE_NAME_PREFIX}-${version}" )
+        SET( CPACK_SOURCE_GENERATOR TGZ )
+        SET(CPACK_SOURCE_IGNORE_FILES
             "~$"
             "\\\\.cvsignore$"
             "^${PROJECT_SOURCE_DIR}.*/CVS/"
@@ -204,101 +198,96 @@ IF ( NOT MAKE_DOCS_ONLY )
             "^${PROJECT_SOURCE_DIR}/tag_build$"
             "^${PROJECT_SOURCE_DIR}/old_tag$"
             "^${PROJECT_SOURCE_DIR}/ecl/regress/"
-        "^${PROJECT_SOURCE_DIR}/testing/"
+            "^${PROJECT_SOURCE_DIR}/testing/"
             )
 
-    ###
-    ## Run file configuration to set build tag along with install lines for generated
-    ## config files.
-    ###
-    SET( BUILD_TAG "${version}-${stagever}")
-    IF (USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
-        FETCH_GIT_TAG (${CMAKE_SOURCE_DIR} ${projname}_${version} GIT_BUILD_TAG)
-        MESSAGE ("-- Git tag is '${GIT_BUILD_TAG}'")
-        IF (NOT "${GIT_BUILD_TAG}" STREQUAL "${BUILD_TAG}")
-            IF (CHECK_GIT_TAG)
-                MESSAGE(FATAL_ERROR "Git tag '${GIT_BUILD_TAG}' does not match source version '${BUILD_TAG}'" )
-            ELSE()
-                IF(NOT "${GIT_BUILD_TAG}" STREQUAL "") # probably means being built from a tarball...
-                    SET( BUILD_TAG "${BUILD_TAG}[${GIT_BUILD_TAG}]")
+        ###
+        ## Run file configuration to set build tag along with install lines for generated
+        ## config files.
+        ###
+        SET( BUILD_TAG "${version}-${stagever}")
+        IF (USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
+            FETCH_GIT_TAG (${CMAKE_SOURCE_DIR} ${projname}_${version} GIT_BUILD_TAG)
+            MESSAGE ("-- Git tag is '${GIT_BUILD_TAG}'")
+            IF (NOT "${GIT_BUILD_TAG}" STREQUAL "${BUILD_TAG}")
+                IF (CHECK_GIT_TAG)
+                    MESSAGE(FATAL_ERROR "Git tag '${GIT_BUILD_TAG}' does not match source version '${BUILD_TAG}'" )
+                ELSE()
+                    IF(NOT "${GIT_BUILD_TAG}" STREQUAL "") # probably means being built from a tarball...
+                        SET( BUILD_TAG "${BUILD_TAG}[${GIT_BUILD_TAG}]")
+                    ENDIF()
                 ENDIF()
             ENDIF()
         ENDIF()
-    ENDIF()
-    MESSAGE("-- Build tag is '${BUILD_TAG}'")
+        MESSAGE("-- Build tag is '${BUILD_TAG}'")
 
-    IF(NOT "${BASE_BUILD_TAG}" STREQUAL "")
-        set(BASE_BUILD_TAG "${BUILD_TAG}")
-    ENDIF()
-    MESSAGE("-- Base build tag is '${BASE_BUILD_TAG}'")
-
-    CONFIGURE_FILE(${HPCC_WSSQL_SOURCE_DIR}/wssql-build-config.h.cmake "wssql-build-config.h" )
-    CONFIGURE_FILE(${HPCC_SOURCE_DIR}/build-config.h.cmake "build-config.h" )
-
-    IF( UNIX )
-        IF( "${packageManagement}" STREQUAL "DEB" )
-            set ( CPACK_GENERATOR "${packageManagement}" )
-            message("-- Will build DEB package")
-            ###
-            ## CPack instruction required for Debian
-            ###
-            MESSAGE("-- Packing BASH installation files")
-            SET( CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postinst;${CMAKE_CURRENT_BINARY_DIR}/initfiles/sbin/prerm;${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postrm" )
-        ELSEIF( "${packageManagement}" STREQUAL "RPM" )
-            SET( CPACK_GENERATOR "${packageManagement}" )
-            ###
-            ## CPack instruction required for RPM
-            ###
-            MESSAGE("-- Will build RPM package")
-            MESSAGE("-- Packing BASH installation files")
-            SET( CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postinst" )
-            SET( CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/sbin/prerm" )
-            SET( CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postrm" )
-        ELSE()
-            MESSAGE("WARNING: Unsupported package ${packageManagement}.")
+        IF(NOT "${BASE_BUILD_TAG}" STREQUAL "")
+            set(BASE_BUILD_TAG "${BUILD_TAG}")
         ENDIF()
-    ENDIF ( UNIX )
+        MESSAGE("-- Base build tag is '${BASE_BUILD_TAG}'")
 
-    #SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}-${hpccstagever}")
-    #Due to unstandard HPCC versioning, we will only request versions up to the point value.
-    IF ( "${packageManagement}" STREQUAL "DEB" )
-        SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}~")
-    ELSE()
-        SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}")
+        CONFIGURE_FILE(${HPCC_WSSQL_SOURCE_DIR}/wssql-build-config.h.cmake "wssql-build-config.h" )
+        CONFIGURE_FILE(${HPCC_SOURCE_DIR}/build-config.h.cmake "build-config.h" )
+
+        IF( UNIX )
+            IF( "${packageManagement}" STREQUAL "DEB" )
+                set ( CPACK_GENERATOR "${packageManagement}" )
+                message("-- Will build DEB package")
+                ###
+                ## CPack instruction required for Debian
+                ###
+                MESSAGE("-- Packing BASH installation files")
+                SET( CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postinst;${CMAKE_CURRENT_BINARY_DIR}/initfiles/sbin/prerm;${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postrm" )
+            ELSEIF( "${packageManagement}" STREQUAL "RPM" )
+                SET( CPACK_GENERATOR "${packageManagement}" )
+                ###
+                ## CPack instruction required for RPM
+                ###
+                MESSAGE("-- Will build RPM package")
+                MESSAGE("-- Packing BASH installation files")
+                SET( CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postinst" )
+                SET( CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/sbin/prerm" )
+                SET( CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE "${CMAKE_CURRENT_BINARY_DIR}/initfiles/bash/sbin/deb/postrm" )
+            ELSE()
+                MESSAGE("WARNING: Unsupported package ${packageManagement}.")
+            ENDIF()
+        ENDIF ( UNIX )
+
+        #SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}-${hpccstagever}")
+        #Due to unstandard HPCC versioning, we will only request versions up to the point value.
+        IF ( "${packageManagement}" STREQUAL "DEB" )
+            SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}~")
+        ELSE()
+            SET(HPCC_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}")
+        ENDIF()
+
+        MATH( EXPR minor_ceiling "${HPCC_MINOR} + 1")
+        SET(HPCC_VERSION_CEILING "${HPCC_MAJOR}.${minor_ceiling}.0")
+
+        MESSAGE("-- Building against HPCC Platform version: ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}-${HPCC_MATURITY}${HPCC_SEQUENCE}")
+        MESSAGE("--- Maximum runtime HPCC Platform version allowed:  ${HPCC_VERSION_CEILING}")
+
+        IF ( EXISTS ${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/${packageRevision}.cmake.in )
+            CONFIGURE_FILE(${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/${packageRevision}.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/dependencies/${packageRevision}.cmake)
+            INCLUDE(${CMAKE_CURRENT_BINARY_DIR}/dependencies/${packageRevision}.cmake)
+        ELSE()
+            MESSAGE(WARNING "DEPENDENCY FILE FOR ${packageRevision} NOT FOUND, Using deps template.")
+            INCLUDE( ${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/template.cmake )
+        ENDIF()
+
+        IF ( UNIX )
+            SET ( CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" )
+        ENDIF ( UNIX )
+
+        ###
+        ## Below are the non-compile based install scripts required for
+        ## the hpcc platform.
+        ###
+
+        INCLUDE (CPack)
+
     ENDIF()
 
-    MATH( EXPR minor_ceiling "${HPCC_MINOR} + 1")
-    SET(HPCC_VERSION_CEILING "${HPCC_MAJOR}.${minor_ceiling}.0")
-
-    MESSAGE("-- Building against HPCC Platform version: ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}-${HPCC_MATURITY}${HPCC_SEQUENCE}")
-    MESSAGE("--- Minimum buildtime HPCC Platform version required: ${HPCC_MAJOR_REQ}.${HPCC_MINOR_REQ}")
-    MESSAGE("--- Maximum runtime HPCC Platform version allowed:  ${HPCC_VERSION_CEILING}")
-
-    IF (${HPCC_MAJOR_REQ} GREATER ${HPCC_MAJOR} OR ( ${HPCC_MAJOR_REQ} EQUAL ${HPCC_MAJOR} AND ${HPCC_MINOR_REQ} GREATER ${HPCC_MINOR} ))
-        MESSAGE(FATAL_ERROR "Project ${project} requires HPCC Platform version ${HPCC_MAJOR_REQ}.${HPCC_MINOR_REQ} or greater." )
+    IF ( MAKE_DOCS )
+        ADD_SUBDIRECTORY(docs)
     ENDIF()
-
-    IF ( EXISTS ${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/${packageRevision}.cmake.in )
-        CONFIGURE_FILE(${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/${packageRevision}.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/dependencies/${packageRevision}.cmake)
-        INCLUDE(${CMAKE_CURRENT_BINARY_DIR}/dependencies/${packageRevision}.cmake)
-    ELSE()
-        MESSAGE(WARNING "DEPENDENCY FILE FOR ${packageRevision} NOT FOUND, Using deps template.")
-        INCLUDE( ${HPCC_WSSQL_SOURCE_DIR}/cmake_modules/dependencies/template.cmake )
-    ENDIF()
-
-    IF ( UNIX )
-        SET ( CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" )
-    ENDIF ( UNIX )
-
-    ###
-    ## Below are the non-compile based install scripts required for
-    ## the hpcc platform.
-    ###
-
-    INCLUDE (CPack)
-
-ENDIF()
-
-IF ( MAKE_DOCS )
-    ADD_SUBDIRECTORY(docs)
-ENDIF()
