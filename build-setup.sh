@@ -1,8 +1,9 @@
 #!/bin/bash
 
-package_type=$(./HPCC-Platform/cmake_modules/distrocheck.sh)
-version=$(./HPCC-Platform/cmake_modules/getpackagerevisionarch.sh -n)
 
+basedir=$(dirname ${0})
+package_type=$(${basedir}/HPCC-Platform/cmake_modules/distrocheck.sh)
+version=$(${basedir}/HPCC-Platform/cmake_modules/getpackagerevisionarch.sh -n)
 
 if [[ "${package_type}" == "DEB" ]]; then
     if [[ "${version}" == "xenial" || "${version}" == "zesty" ]]; then
