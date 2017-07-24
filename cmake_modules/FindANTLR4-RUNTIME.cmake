@@ -23,8 +23,9 @@
 
 include(UseJava)
 find_jar(ANTLR4_RUNTIME_JAR
-    antlr4-runtime
+    NAMES antlr4-runtime antlr-runtime
     PATHS /usr/share/java
+    VERSIONS 4.6 4.7 4.8
     )
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(

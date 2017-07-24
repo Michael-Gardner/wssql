@@ -23,8 +23,9 @@
 
 include(UseJava)
 find_jar(ANTLR3_RUNTIME_JAR
-    antlr3-runtime
+    NAMES antlr3-runtime
     PATHS /usr/share/java
+    VERSIONS 3.5.2
     )
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(

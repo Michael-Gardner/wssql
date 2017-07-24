@@ -28,7 +28,7 @@ find_package(STRINGTEMPLATE4 REQUIRED)
 
 include(UseJava)
 find_jar(ANTLR4_JAR
-    antlr4
+    NAMES antlr4 antlr4-4.6-complete antlr4-4.7-complete antlr4-4.8-complete
     PATHS /usr/share/java
     )
 include(FindPackageHandleStandardArgs)
